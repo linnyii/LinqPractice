@@ -141,19 +141,22 @@ public class Practice
     {
         // 1. 找出所有日本的影片名稱
         Console.WriteLine($"{Environment.NewLine}Q: 找出所有日本的影片名稱");
+        _videoList.Where(x => x.Country == "日本").ToList().ForEach(x => Console.WriteLine($"{x.Name}"));
 
         // 2. 找出所有歐美的影片且類型為"影集"的影片名稱
         Console.WriteLine($"{Environment.NewLine}Q: 找出所有歐美的影片且類型為'影集'的影片名稱");
-
+        _videoList.Where(x=> x is { Type: "影集", Country: "歐美" }).ToList().ForEach(x=> Console.WriteLine($"{x.Country}{x.Type}:{x.Name}"));
+        
         // 3. 是否有影片片長超過120分鐘的影片
         Console.WriteLine($"{Environment.NewLine}Q: 是否有影片片長超過120分鐘的影片");
+        _videoList.Where(x => x.Duration > 120).ToList().ForEach(x =>Console.WriteLine($"片名:{x.Name} 影片長度:{x.Duration}"));
 
         // 4. 請列出所有人的名稱，並且用大寫英文表示，ex: Bill -> BILL
-        Console.WriteLine($"{Environment.NewLine}Q: 請列出所有人的名稱，並且用大寫英文表示");
+        _personList.ToList().ForEach(x=> Console.WriteLine($"{x.Name?.ToUpper()}"));
 
         // 5. 將所有影片用片長排序(最長的在前)，並顯示排序過的排名以及片名，ex: No1: 天竺鼠車車
         Console.WriteLine($"{Environment.NewLine}Q: 將所有影片用片長排序(最長的在前)，並顯示排序過的排名以及片名");
-
+        _videoList.OrderBy(x=> x.Duration).Select((video, index) => new{Index = index+1, VideoName = video.Name}).ToList().ForEach(obj=> Console.WriteLine($"{obj.Index}: {obj.VideoName}"));
         // 6. 將所有影片進行以"類型"分類，並顯示以下樣式(注意縮排)
         /* 
         動漫:
@@ -161,18 +164,29 @@ public class Practice
             鬼滅之刃
         */
         Console.WriteLine($"{Environment.NewLine}Q: 將所有影片進行以'類型'分類");
-
+        _videoList.GroupBy(x => x.Type).ToList().
+            ForEach(grouping => { Console.WriteLine($"{grouping.Key}"); grouping.ToList().ForEach(x=> Console.WriteLine($"{x.Name}")); Console.WriteLine();});
+        
         // 7. 找到第一個喜歡歐美影片的人
         Console.WriteLine($"{Environment.NewLine}Q: 找到第一個喜歡歐美影片的人");
+        Console.WriteLine($"{_personList.FirstOrDefault(x => x.CountryPrefer != null && x.CountryPrefer.Contains("歐美"))?.Name}");
 
         // 8. 找到每個人喜歡的影片(根據國家以及類型)，ex: Bill: 半澤直樹, 倚天屠龍記2019, 下一站是幸福
         Console.WriteLine($"{Environment.NewLine}Q: 找到每個人喜歡的影片");
+        foreach (var person in _personList)
+        {
+           Console.WriteLine(person.Name);
+        }
+        
         
         // 9. 列出所有類型的影片總時長，ex: 動漫: 100min
         Console.WriteLine($"{Environment.NewLine}Q: 列出所有類型的影片總時長");
+        _videoList.GroupBy(x=>x.Type).ToList().ForEach(grouping => Console.WriteLine($"{grouping.Key}:{grouping.Sum(x => x.Duration)}m"));
+
 
         // 10. 列出所有國家出產的影片數量，ex: 日本: 3部
         Console.WriteLine($"{Environment.NewLine}Q: 列出所有國家出產的影片數量");
+        _videoList.GroupBy(x=> x.Country).ToList().ForEach(grouping => Console.WriteLine($"{grouping.Key}:{grouping.Count()}"));
 
         Console.ReadLine();
     }
