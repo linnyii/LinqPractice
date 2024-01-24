@@ -141,19 +141,45 @@ public class Practice
     {
         // 1. 找出所有日本的影片名稱
         Console.WriteLine($"{Environment.NewLine}Q: 找出所有日本的影片名稱");
+        var videosFromJapan = _videoList.Where(x => x.Country == "日本").ToList();
+        foreach (var video in videosFromJapan)
+        {
+            Console.WriteLine($"{video.Country} : {video.Name}");
+        }
+        Console.WriteLine($"所有日本影片的總數: {videosFromJapan.Count}");
 
         // 2. 找出所有歐美的影片且類型為"影集"的影片名稱
         Console.WriteLine($"{Environment.NewLine}Q: 找出所有歐美的影片且類型為'影集'的影片名稱");
-
+        var seriesList = _videoList.Where(x => x is { Type: "影集", Country: "歐美" }).ToList();
+        foreach (var video in seriesList)
+        {
+            Console.WriteLine($"{video.Country}{video.Type} : {video.Name}");
+        }
+        
         // 3. 是否有影片片長超過120分鐘的影片
         Console.WriteLine($"{Environment.NewLine}Q: 是否有影片片長超過120分鐘的影片");
+        var videosDurationOver120List = _videoList.Where(x => x.Duration > 120).ToList();
+        foreach (var video in videosDurationOver120List)
+        {
+           Console.WriteLine($"影片長度 : {video.Duration}");
+        }
 
         // 4. 請列出所有人的名稱，並且用大寫英文表示，ex: Bill -> BILL
         Console.WriteLine($"{Environment.NewLine}Q: 請列出所有人的名稱，並且用大寫英文表示");
+        foreach (var person in _personList)
+        {
+            Console.WriteLine(person.Name.ToUpper());
+        }
 
         // 5. 將所有影片用片長排序(最長的在前)，並顯示排序過的排名以及片名，ex: No1: 天竺鼠車車
         Console.WriteLine($"{Environment.NewLine}Q: 將所有影片用片長排序(最長的在前)，並顯示排序過的排名以及片名");
-
+        var orderVideoList = _videoList.OrderBy(x=>x.Duration).ToList();
+        var orderNumber = 0;
+        foreach (var video in orderVideoList)
+        {
+            orderNumber++;
+            Console.WriteLine($"No{orderNumber}:{video.Name}");
+        }
         // 6. 將所有影片進行以"類型"分類，並顯示以下樣式(注意縮排)
         /* 
         動漫:
@@ -161,9 +187,19 @@ public class Practice
             鬼滅之刃
         */
         Console.WriteLine($"{Environment.NewLine}Q: 將所有影片進行以'類型'分類");
+        var videosByTypeList = _videoList.GroupBy(x => x.Type).ToList();
+        foreach (var grouping in videosByTypeList)
+        {
+            Console.WriteLine($"{grouping.Key}:");
+            foreach (var video in grouping)
+            {
+               Console.WriteLine($"{video.Name}"); 
+            }
+        }
 
         // 7. 找到第一個喜歡歐美影片的人
         Console.WriteLine($"{Environment.NewLine}Q: 找到第一個喜歡歐美影片的人");
+        
 
         // 8. 找到每個人喜歡的影片(根據國家以及類型)，ex: Bill: 半澤直樹, 倚天屠龍記2019, 下一站是幸福
         Console.WriteLine($"{Environment.NewLine}Q: 找到每個人喜歡的影片");
